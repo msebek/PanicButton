@@ -1,0 +1,92 @@
+Technical Specification - Backend
+=========
+
+### Technology Stack
+  - Node.js fileserver/api server
+  - Express middleware/request routing
+  - MongoDB for Database
+  - ElasticSearch for Analytics (stretch goal)
+  
+### API
+
+(API Design Guidelines were found [at Vinay Sahni's blog.](http://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api))
+
+The API will be versioned via URL. 
+
+Requests should be made to:
+/api/v0/[endpoint]
+
+## API Version V0 Endpoints
+
+### Post /requests
+
+**Send**: Json request object with the following structure:
+>     {
+>       requestingTeamName: string
+>       requestingTeamID: number
+>       location: string
+>       topic: string
+>       description: string
+>       blockingProblem: string
+>     }
+
+**Receive**: HTTP 201 Created status code, with Location header that points to the url of the new request (/requests/requestid).  
+
+### Get /requests
+
+**Send**: Get request
+
+**Receive**: Last 20 request id's in JSON format:
+>     { requests: 
+>           [id1, id2, id3...id20]
+>     }
+
+### Get /requests/:id
+
+**Send**: Get request
+
+**Receive**: 200 OK, and Last 20 requests, Json response with the following structure:
+>     {  
+>           requestingTeamName: string
+>           requestingTeamID: number
+>           location: string
+>           topic: string
+>           description: string
+>           blockingProblem: string
+>     }
+
+### Patch /requests/:id
+
+**Send**: Json requests with the any of the following fields:
+>     {  
+>           requestingTeamName: string
+>           requestingTeamID: number
+>           location: string
+>           topic: string
+>           description: string
+>           blockingProblem: string
+>     }
+**Receive**: 200 OK
+
+### Post /logging
+
+**Send**: Json requests with the following structure:
+>     {
+>           time: string in UTC format
+>           sessionID: string (unused currently)
+>           message: string
+>     }
+
+**Receive**: 200 OK. No redirect URL
+
+### Post /feedback
+
+**Send**: Json requests with the following structure:
+>     {
+>           time: string in UTC format
+>           score: number (1<= number <=10)
+>           message: string
+>     }
+
+**Receive**: 200 OK. No redirect URL
+
