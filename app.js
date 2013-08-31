@@ -15,8 +15,8 @@ mongoose.connect('mongodb://localhost');
 
 // Set up default settings.
 app.set('port', process.env.PORT || 3000);
-app.set('views', __dirname + '/views');
-app.set('view engine', 'jade');
+//app.set('views', __dirname + '/views');
+//app.set('view engine', 'jade');
 
 // set up middlewares.
 app.use(express.favicon());
@@ -29,9 +29,9 @@ app.use(express.session());
 app.use(app.router);
 
 // stuff for less.
-  //app.use(require('less-middleware')({ src: __dirname + '/public' }));
+//app.use(require('less-middleware')({ src: __dirname + '/public' }));
 // main file serving. 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'client')));
 
 // Simplest error handler. 
 app.use(function(err, req, res, next) {
@@ -54,7 +54,8 @@ app.get('/requests/:id', api.getrequestsid);
 app.patch('/users', api.patchrequestsid);
 app.post('/feedback', api.postfeedback);
 app.post('/logging', api.postlogging);
-// app.post, ...
+
+
 
 // Now we set up the server with app, now that we've
 //  gone through the process of setting up all the middleware.

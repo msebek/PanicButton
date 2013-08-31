@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>ToDo with Knock-out and Bootstrap</title>
+
+		<link rel="stylesheet" href="css/bootstrap.css">
+			
+		<script type="text/javascript" src="external/jquery-1.10.2.js"></script>
+		<script type="text/javascript" src="external/bootstrap-2.3.2.js"></script>
+		<script type='text/javascript' src='external/knockout-2.3.0.debug.js'></script>
+
+	</head>
+    <body>
+		<div class="row">
+			<div class="hero-unit">
+				<h1>Simplest ToDo</h1>
+				<p>With only BootStrap & Knockout</p>
+			</div>
+		</div>
+		<div class="container">
+			<div class="row">
+				<div class="span2"></div>
+				<div class="span8">
+					<div class="page-header">
+						<h1>Add Tasks</h1>
+					</div>
+					<form data-bind="submit: addItem">
+					  <fieldset>
+						<div class="input-append">
+							<input class="span4" data-bind="value: itemToAdd">
+							<button class="btn" type="submit">Go!</button>
+							</div>
+					  </fieldset>
+					</form>
+					<table class="table table-striped">
+						<thead>
+							<th class="span4"></th>
+						</thead>
+						<tbody data-bind="foreach: items">
+							<tr>
+								<td data-bind="text: $data"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="span2"></div>
+			</div>
+		</div>
+    </body>
+	<footer>
+	<script type="text/javascript" src="js/main.js"></script>
+	</footer>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Panic Button: Review Requests</title>
+
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <script type="text/javascript" src="external/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="external/bootstrap-2.3.2.js"></script>
+    <script type='text/javascript' src='external/knockout-2.3.0.debug.js'></script>
+
+</head>
+<body>
+    <div class="row">
+        <div class="hero-unit">
+            <h2>Panic Button: Review Requests</h2>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="span2"></div>
+            <div class="span8">
+                <div class="page-header">
+                    <h1>Help Request Status</h1>
+                </div>
+                <table class="table table-striped">
+				    <thead>
+						<th class="span4"></th>
+					</thead>
+					<tbody data-bind="foreach: available">
+					    <tr>
+	    				    <td data-bind="text: $data.requestingTeamName">Hello!</td>
+                            <td data-bind="text: $data.location">Hello!</td>
+                            <td data-bind="text: $data.topic">Hello!</td>
+                            <td><button class="btn" data-bind='click: $root.approveRequest'>Approve</button></td>
+					    </tr>
+					</tbody>
+				</table>
+            </div>
+            <div class="span2"></div>
+        </div>
+    </div>
+</body>
+<footer>
+    <script type="text/javascript" src="js/review.js"></script>
+</footer>
+</html>
