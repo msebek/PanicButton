@@ -46,7 +46,7 @@ app.get('/', routes.index);
 app.post('/requests', api.postrequests);
 app.get('/requests', api.getrequests);
 app.get('/requests/:id', api.getrequestsid);
-app.patch('/users', api.patchrequestsid);
+app.patch('/requests/:id', api.patchrequestsid);
 app.post('/feedback', api.postfeedback);
 app.post('/logging', api.postlogging);
 

@@ -3,84 +3,93 @@
 
 class ReviewModel {
     public available: KnockoutObservableArray<PanicContracts.HelpRequest>;
-    public refresh: () => void;
-    public getHelpRequests: () => void;
+    //public getHelpRequests: (callback: (newHelpRequests:PanicContracts.HelpRequest[])=> void) => void;
+    //public approveRequestAjax: (HelpRequest: PanicContracts.HelpRequest, callback:()=>void) => void;
     public approveRequest: (HelpRequest: PanicContracts.HelpRequest) => void;
-
 
     constructor() {
         var self = this;
-        this.available = ko.observableArray([]);
-
-        this.getHelpRequests = () => {
-            console.log("Retreiving all help requests called!");
-
-            // JQuery Node: If you have 201 status code, make sure { dataType: "text" }
-            $.ajax({
-                type: "GET",
-                dataType: "json",
-                url: "http://" + window.location.host + "/requests",
-                success: function (data: PanicContracts.HelpRequest[], textStatus: String, jqXHR: any) {
-                    console.log("Success");
-                    // Find difference between arrays
-                    var difference = [];
-                    difference = self.arrayDifference(data, self.available.slice(0));
-
-                    // Sort by time
-
-                    // Add to front of Available.
-                    $.map(difference, (elementOfArray, indexInArray) => {
-                        self.available.unshift(<PanicContracts.HelpRequest>elementOfArray);
-                    });
-
-                },
-
-                error: function (xhr, ajaxOptions, thrownError) {
-                    alert("Something is dumb");
-                },
-            });
-        }
+        this.available = ko.observableArray();
 
         // Populate the help requests.
-        function retry() {
+        function getRequest() {
             setTimeout(() => {
-                console.log("starting retry...");
-                self.getHelpRequests();
-                retry();
-            }, 3000);
+                // Use self inside of timeout; this becomes window.
+                self.getRequestAjax((newRequests : PanicContracts.HelpRequest[]) => {
+                    // Straight-up replace them all. 
+                    self.available.removeAll();
+                    $.map(newRequests, (elem, index) => {
+                        self.available.unshift(elem);
+                    });
+                });
+                getRequest();
+            }, 2000);
         }
-
-        retry();
+        getRequest();
 
         this.approveRequest = (HelpRequest: PanicContracts.HelpRequest) => {
-            // Grab the request id.
-            $.ajax({
-                type: "PATCH",
-                data: { status: "approved" },
-                dataType: "text",
-                url: "http://" + window.location.host + "/requests" + HelpRequest.urlId
+            this.approveRequestAjax(HelpRequest, () => {
+                console.log("Approved!");
             });
-        }
-
+        }  
+      
     }
 
-    // Find the difference between two arrays of objects. perform a - b
-    public arrayDifference(a:PanicContracts.HelpRequest[], b:PanicContracts.HelpRequest[]) {
-        // Make hashtable of ids in B
-        var bIds : any = {};
-        $.each(b, (function(index, req : PanicContracts.HelpRequest){
-                bIds[req.urlId] = req;
-        }));
+    public getRequestAjax(callback: (allRequests: PanicContracts.HelpRequest[]) => void) {
+        // JQuery Node: If you have 201 status code, make sure { dataType: "text" }
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "http://" + window.location.host + "/requests",
+            success: function (data: PanicContracts.HelpRequest[], textStatus: String, jqXHR: any) {
+                callback(data);
+            },
 
-        // Return all elements in A, unless in B
-        return $.grep(a, (function (req : PanicContracts.HelpRequest, index) {
-            return !(<any>req.urlId in bIds);
-        }));
+            error: function (xhr, ajaxOptions, thrownError) {
+                console.log("Disconnected...");
+            },
+        });
+    }
+
+    public approveRequestAjax(HelpRequest: PanicContracts.HelpRequest, callback: () => void) {
+        // Grab the request id.
+        $.ajax({
+            type: "PATCH",
+            data: { status: "approved" },
+            dataType: "text",
+            url: "http://" + window.location.host + "/requests/" + HelpRequest.urlId,
+            success: callback
+        });
     }
 
 }
 
+class ReviewViewModel extends ReviewModel {
+    public showRequest: (elem) => void;
+
+    constructor() {
+        super();
+        this.showRequest = (elem) => {
+            if (elem.nodeType === 1) $(elem).slideUp(function () { $(elem).remove(); })
+        }
+    }
+}
+
+// Find the difference between two arrays of objects. perform a - b
+function arrayDifference(a:PanicContracts.HelpRequest[], b:PanicContracts.HelpRequest[]) {
+    // Make hashtable of ids in B
+    var bIds: any = {};
+    $.each(b, (function (index, req: PanicContracts.HelpRequest) {
+        bIds[req.urlId] = req;
+    }));
+
+    // Return all elements in A, unless in B
+    return $.grep(a, (function (req: PanicContracts.HelpRequest, index) {
+        return !(<any>req.urlId in bIds);
+    }));
+}
 
 
+//function arrayUpdate(a:PanicContracts.HelpRequest[], )
 
 ko.applyBindings(new ReviewModel());

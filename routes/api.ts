@@ -97,6 +97,7 @@ exports.patchrequestsid = function (req, res) {
         console.log(requests);
         //TODO: Actually check errors?
         if (requests.length === 0) {
+            console.log("Couldn't find any results, continuing...");
             res.send(404);
             return;
         }
@@ -108,7 +109,7 @@ exports.patchrequestsid = function (req, res) {
         // See what field need to be changed  
         // This seems stupid.  
         //var myTimeStamp = req.body.timestamp; Don't allow timeestamp to change
-        //var myUrlId = req.body.urlId; Don't allow myu
+        //var myUrlId = req.body.urlId; Don't allow urlId to change
         var myRequestingTeamName = req.body.requestingTeamName;
         var myLocation = req.body.location;
         var myTopic = req.body.topic;
@@ -139,9 +140,13 @@ exports.patchrequestsid = function (req, res) {
 
         if (req.body.status !== undefined) {
             tempRequest.status = req.body.status;
-            debugger;
         }
-        
+
+        tempRequest.save((err) => {
+            if (err) {
+                console.log("COULD NOT SAVE UPDATED RECORD");
+            }
+        });
         res.setHeader('Location', '/requests/' + tempRequest.urlId);
         res.send(204)
 

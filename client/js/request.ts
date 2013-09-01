@@ -1,7 +1,6 @@
 /// <reference path="../external/knockout-2.3.0.d.ts" />
 /// <reference path="../external/jquery-1.10.2.d.ts" />
 /// <reference path="shared.ts" />
-
 class RequestModel {
     public teamName: KnockoutObservable<string>;
     public location: KnockoutObservable<string>;
