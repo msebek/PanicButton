@@ -5,7 +5,7 @@ class ReviewModel {
     public available: KnockoutObservableArray<PanicContracts.HelpRequest>;
     public refresh: () => void;
     public getHelpRequests: () => void;
-    public approveRequest: (HelpRequest : PanicContracts.HelpRequest) => void;
+    public approveRequest: (HelpRequest: PanicContracts.HelpRequest) => void;
 
 
     constructor() {
@@ -20,14 +20,21 @@ class ReviewModel {
                 type: "GET",
                 dataType: "json",
                 url: "http://" + window.location.host + "/requests",
-                success: function (data : Object, textStatus : String, jqXHR : any) {
+                success: function (data: PanicContracts.HelpRequest[], textStatus: String, jqXHR: any) {
                     console.log("Success");
-                    $.map(data, (elementOfArray, indexInArray) => {
-                        self.available.push(<PanicContracts.HelpRequest>elementOfArray);
+                    // Find difference between arrays
+                    var difference = [];
+                    difference = self.arrayDifference(data, self.available.slice(0));
+
+                    // Sort by time
+
+                    // Add to front of Available.
+                    $.map(difference, (elementOfArray, indexInArray) => {
+                        self.available.unshift(<PanicContracts.HelpRequest>elementOfArray);
                     });
-                    
+
                 },
-                
+
                 error: function (xhr, ajaxOptions, thrownError) {
                     alert("Something is dumb");
                 },
@@ -35,18 +42,40 @@ class ReviewModel {
         }
 
         // Populate the help requests.
-        this.getHelpRequests();
+        function retry() {
+            setTimeout(() => {
+                console.log("starting retry...");
+                self.getHelpRequests();
+                retry();
+            }, 3000);
+        }
 
-        this.approveRequest = (HelpRequest : PanicContracts.HelpRequest) => {
+        retry();
+
+        this.approveRequest = (HelpRequest: PanicContracts.HelpRequest) => {
             // Grab the request id.
-
             $.ajax({
-                type: "PATCH", 
-                dataType: "text", 
-                url: "http://" + window.location.host + "/requests",
+                type: "PATCH",
+                data: { status: "approved" },
+                dataType: "text",
+                url: "http://" + window.location.host + "/requests" + HelpRequest.urlId
             });
-        }        
+        }
 
+    }
+
+    // Find the difference between two arrays of objects. perform a - b
+    public arrayDifference(a:PanicContracts.HelpRequest[], b:PanicContracts.HelpRequest[]) {
+        // Make hashtable of ids in B
+        var bIds : any = {};
+        $.each(b, (function(index, req : PanicContracts.HelpRequest){
+                bIds[req.urlId] = req;
+        }));
+
+        // Return all elements in A, unless in B
+        return $.grep(a, (function (req : PanicContracts.HelpRequest, index) {
+            return !(<any>req.urlId in bIds);
+        }));
     }
 
 }

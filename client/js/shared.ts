@@ -3,9 +3,14 @@
 module PanicContracts {
 
     export interface HelpRequest {
+        timestamp?: Number;
+        urlId?: String;      // short form of URL
         requestingTeamName: String;
         location: String;
         topic: String;
+        description?: String;
+        blockingProblem?: String;
+        status?: String
     }
 
     export class SupportedTechnologies {

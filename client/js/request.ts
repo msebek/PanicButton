@@ -21,7 +21,9 @@ class RequestModel {
             var grrrr : PanicContracts.HelpRequest = {
                 "requestingTeamName": this.teamName(),
                 "location": this.location(),
-                "topic": this.topic()
+                "topic": this.topic(),
+                "description": "",
+                "blockingProblem": ""
             };
 
             console.log(grrrr);

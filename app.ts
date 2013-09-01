@@ -1,3 +1,5 @@
+/// <reference path="external/node-0.10.1.d.ts" />
+
 /**
  * Module dependencies.
  */
@@ -15,22 +17,17 @@ mongoose.connect('mongodb://localhost');
 
 // Set up default settings.
 app.set('port', process.env.PORT || 3000);
-//app.set('views', __dirname + '/views');
-//app.set('view engine', 'jade');
 
 // set up middlewares.
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
-app.use(express.cookieParser('your secret here'));
+app.use(express.cookieParser('secret i guess'));
 app.use(express.session());
-//??
 app.use(app.router);
 
-// stuff for less.
-//app.use(require('less-middleware')({ src: __dirname + '/public' }));
-// main file serving. 
+// Serve files out of 'client' directory. 
 app.use(express.static(path.join(__dirname, 'client')));
 
 // Simplest error handler. 
@@ -44,9 +41,7 @@ if ('development' == app.get('env')) {
 }
 
 
-//   can pass multiple callbacks, treated like the middlewares. 
-// used by app.router. 
-// call next() to pass control to next thing in middleware stack.
+// API routing
 app.get('/', routes.index);
 app.post('/requests', api.postrequests);
 app.get('/requests', api.getrequests);
