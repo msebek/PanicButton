@@ -6,9 +6,19 @@ install:
 	npm install
 
 clean:
-	-rm -r node_modules
+#Clean up bin and obj
+	-rm -r bin obj
+	-rm -r client/bin client/obj
+
+	-rm *.js *.js.map
+	-rm models/*.js models/*.js.map
+	-rm routes/*.js routes/*.js.map
+#Clean up solution files
+	-rm *.v11.suo *.sln *.csproj.user
+	-rm client/*.v11.suo client/*.sln client/*.csproj.user
 
 reallyclean: clean
+	-rm -r node_modules
 	-rm -r $(ExternalDirectory)
 	-rm -r $(LocalDataDirectory)
 
