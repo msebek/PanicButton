@@ -1,26 +1,36 @@
 /// <reference path="../external/knockout-2.3.0.d.ts" />
+/// <reference path="../external/knockout-2.3.0.mapping.d.ts" />
 /// <reference path="../external/jquery-1.10.2.d.ts" />
 
 class ReviewModel {
-    public available: KnockoutObservableArray<PanicContracts.HelpRequest>;
-    //public getHelpRequests: (callback: (newHelpRequests:PanicContracts.HelpRequest[])=> void) => void;
-    //public approveRequestAjax: (HelpRequest: PanicContracts.HelpRequest, callback:()=>void) => void;
+    public available: any;
     public approveRequest: (HelpRequest: PanicContracts.HelpRequest) => void;
 
     constructor() {
         var self = this;
-        this.available = ko.observableArray();
+        // Start trying to take advantage of Knockout mappings
+        var requests: PanicContracts.HelpRequest[];
+        // Initially retrieve data
+        $.ajax({
+            async: false,
+            url: "http://" + window.location.host + "/requests",
+            dataType: "json",
+            success: function (result) {
+                requests = result;
+            }
+        });
+
+        // Load the viewmodel
+        this.available = ko.mapping.fromJS(requests);
+        console.log(requests);
 
         // Populate the help requests.
         function getRequest() {
             setTimeout(() => {
                 // Use self inside of timeout; this becomes window.
                 self.getRequestAjax((newRequests : PanicContracts.HelpRequest[]) => {
-                    // Straight-up replace them all. 
-                    self.available.removeAll();
-                    $.map(newRequests, (elem, index) => {
-                        self.available.unshift(elem);
-                    });
+                    // TODO: intelligently diff them, and update them.  
+                    ko.mapping.fromJS(newRequests, self.available);
                 });
                 getRequest();
             }, 2000);
@@ -29,7 +39,7 @@ class ReviewModel {
 
         this.approveRequest = (HelpRequest: PanicContracts.HelpRequest) => {
             this.approveRequestAjax(HelpRequest, () => {
-                console.log("Approved!");
+                // Do stuff once approved is sent...
             });
         }  
       
@@ -43,11 +53,12 @@ class ReviewModel {
             url: "http://" + window.location.host + "/requests",
             success: function (data: PanicContracts.HelpRequest[], textStatus: String, jqXHR: any) {
                 callback(data);
+                console.log(data);
             },
 
             error: function (xhr, ajaxOptions, thrownError) {
                 console.log("Disconnected...");
-            },
+            }
         });
     }
 
@@ -57,7 +68,7 @@ class ReviewModel {
             type: "PATCH",
             data: { status: "approved" },
             dataType: "text",
-            url: "http://" + window.location.host + "/requests/" + HelpRequest.urlId,
+            url: "http://" + window.location.host + "/requests/" + HelpRequest.urlId(),
             success: callback
         });
     }
@@ -89,7 +100,4 @@ function arrayDifference(a:PanicContracts.HelpRequest[], b:PanicContracts.HelpRe
     }));
 }
 
-
-//function arrayUpdate(a:PanicContracts.HelpRequest[], )
-
-ko.applyBindings(new ReviewModel());
+ko.applyBindings(new ReviewViewModel());

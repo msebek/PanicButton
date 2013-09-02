@@ -9,6 +9,7 @@
     <script type="text/javascript" src="external/jquery-1.10.2.js"></script>
     <script type="text/javascript" src="external/bootstrap-2.3.2.js"></script>
     <script type='text/javascript' src='external/knockout-2.3.0.debug.js'></script>
+    <script type='text/javascript' src='external/knockout-2.3.0.mapping.js'></script>
 
 </head>
 <body>
@@ -29,12 +30,12 @@
 						<th class="span4"></th>
 					</thead>
 					<tbody data-bind="foreach: available">
-					    <tr data-bind="style: { backgroundColor: $data.status === 'approved' ? 'rgba(0, 255, 0, .2)' : 'rgba(255, 0, 0, .2)'}" }>
-	    				    <td data-bind="text: $data.requestingTeamName">Hello!</td>
-                            <td data-bind="text: $data.location">Hello!</td>
-                            <td data-bind="text: $data.topic">Hello!</td>
-                            <td data-bind="text: $data.status">Hello!</td>
-                            <td><button class="btn" data-bind='enable: $data.status !== "approved", click: $root.approveRequest'>Approve</button></td>
+					    <tr data-bind="style: { backgroundColor: $data.status() === 'approved' ? 'rgba(0, 255, 0, .2)' : 'rgba(255, 0, 0, .2)'}" }>
+	    				    <td data-bind="text: $data.requestingTeamName"></td>
+                            <td data-bind="text: $data.location"></td>
+                            <td data-bind="text: $data.topic"></td>
+                            <td data-bind="text: $data.status"></td>
+                            <td><button class="btn" data-bind='enable: ($data.status() !== "approved"), click: $root.approveRequest'>Approve</button></td>
 					    </tr>
 					</tbody>
 				</table>

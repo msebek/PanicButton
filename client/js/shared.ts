@@ -3,14 +3,14 @@
 module PanicContracts {
 
     export interface HelpRequest {
-        timestamp?: Number;
-        urlId?: String;      // short form of URL
-        requestingTeamName: String;
-        location: String;
-        topic: String;
-        description?: String;
-        blockingProblem?: String;
-        status?: String
+        timestamp?: KnockoutObservable<Number>;
+        urlId?: KnockoutObservable<String>;      // short form of URL
+        requestingTeamName: KnockoutObservable<String>;
+        location: KnockoutObservable<String>;
+        topic: KnockoutObservable<String>;
+        description?: KnockoutObservable<String>;
+        blockingProblem?: KnockoutObservable<String>;
+        status?: KnockoutObservable<String>;
     }
 
     export class SupportedTechnologies {

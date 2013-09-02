@@ -65,7 +65,7 @@ exports.postrequests = function (req, res) {
  */
 exports.getrequests = function (req, res) {
     console.log("get requests!");
-    Request.find(function (err, requests) {
+    Request.find({}).sort('-timestamp').exec((err, requests) => {
         res.send(JSON.stringify(requests, null, 4));
     });
 };

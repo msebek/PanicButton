@@ -17,7 +17,7 @@ class RequestModel {
         this.sendRequest = () => {
             // Dispatch request
             console.log("send request called!");
-            var grrrr : PanicContracts.HelpRequest = {
+            var grrrr = {
                 "requestingTeamName": this.teamName(),
                 "location": this.location(),
                 "topic": this.topic(),
